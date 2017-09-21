@@ -211,6 +211,10 @@ for search results
   cursor: move;
 }
 
+.location_selected {
+  box-shadow: 5rem 5rem 5rem rgb(66, 133, 244);
+}
+
 .location_entry_content {
   padding: 10rem;
   flex: 9;

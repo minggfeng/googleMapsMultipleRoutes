@@ -7,5 +7,5 @@ function initListeners() {
   menuButton.addEventListener('click', sidebarHelpers.expand);
   closeButton.addEventListener('click', removeResultsButtonHandleClick);
   sidebarRightDiv.addEventListener('click', (e) => { rightSidebarDivHandleClick(e, myRoutes) });
-  window.addEventListener('resize', (e) => { map.resizeMap.bind(map) });
+  window.addEventListener('resize', (e) => { map.resizeMap(map); });
 }

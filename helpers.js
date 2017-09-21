@@ -70,9 +70,13 @@ function removeResultsButtonHandleClick(e) {
   e.stopPropagation();
 }
 
+function escape(s) {
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 function handleSearch(e) {
   e.preventDefault();
-  let query = searchText.value;
+  let query = escape(searchText.value);
   if (query === "") {
     handleAlert(alertSearchDiv, 'Search criteria required');
   } else {
@@ -94,4 +98,11 @@ function handlePlaceChange(e) {
     }
   }
 };
+
+function setScrollTop(parentElement, element) {
+  let elementRect = element.getBoundingClientRect();
+  let parentElementRect = parentElement.getBoundingClientRect();
+  let currentParentElementScrollTop = parentElement.scrollTop;
+  parentElement.scrollTop = currentParentElementScrollTop + elementRect.top - parentElementRect.top;
+}
 

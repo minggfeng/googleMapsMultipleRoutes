@@ -5,6 +5,8 @@ class Locations {
     this.locations = [];
     this.info = {};
     this.map = map;
+    this.parentElement;
+    this.bounds = new google.maps.LatLngBounds();
   }
 }
 
@@ -67,13 +69,17 @@ Locations.prototype.createSingleMarker = function(location) {
 
   marker.addListener('click', (e, locId, context) => { this.expand(e, location.id, this) });
   
-  this.map.bounds.extend(latlng);
-  this.map.map.fitBounds(this.map.bounds);
+  this.bounds.extend(latlng);
+  this.map.map.fitBounds(this.bounds);
+  this.map.map.panToBounds(this.bounds);
   return marker;
 }
 
 
 Locations.prototype.addLocation = function(parentElement, location) {
+  if (this.parentElement === undefined) {
+    this.parentElement = parentElement;
+  }
   let locationEntry = this.createLocationEntry(location);
   let marker = this.createSingleMarker(location);
   this.info[location.id] = this.locations.length;
@@ -105,16 +111,26 @@ Locations.prototype.addResults = function(results) {
 Locations.prototype.expand = function(e, locId, context) {
   if (e.target && e.target.classList.contains('close')) return;
   let locationIndex = context.info[locId];
-  let locationEntryExpand = context.locations[locationIndex].element.querySelector('.location_entry_expand');
+  let locationElement = context.locations[locationIndex].element;
+  let locationEntryExpand = locationElement.querySelector('.location_entry_expand');
   let marker = context.locations[locationIndex].marker;
   locationEntryExpand.classList.toggle('location_entry_expand_active');
-  resetBounds(marker.position);
+  locationElement.classList.toggle('location_selected');
+  if (locationEntryExpand.classList.contains('location_entry_expand_active')) {
+    let latlng = new google.maps.LatLngBounds(marker.position);
+    this.map.resetBounds(latlng);
+    setScrollTop(this.parentElement, locationElement);
+  } else {
+    this.map.resetBounds(this.bounds);
+  }
 }
 
 Locations.prototype.clearLocations = function() {
   this.removeMarkers();
   this.locations = [];
   this.info = {};
+  this.bounds = new google.maps.LatLngBounds();
+  this.map.resetBounds();
 }
 
 Locations.prototype.removeMarkers = function() {

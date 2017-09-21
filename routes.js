@@ -97,6 +97,8 @@ Route.prototype.handleDirections = function(res, status) {
     distanceDiv.innerHTML = `${roundNumber(distance/1609.34, 2)} ${duration === 1 ? 'mile' : 'miles'}`;
     durationDiv.innerHTML = `${formatTime(duration)}`;
     this.routeDiv.querySelector('.route_info').classList.add('route_info_active');
+    this.map.bounds.extend(res.routes[0].overview_path[0]);
+    this.map.bounds.extend(res.routes[0].overview_path[res.routes[0].overview_path.length - 1]);
   } else {
     handleAlert(this.alertDiv, "No route found");
   }
@@ -182,7 +184,7 @@ Route.prototype.handleClick = function(e, context) {
     context.removeRouteLocationEntry(e);
   }
 
-  if (e.target.classList.contains('check_box')) {
+  if (e.target.classList.contains('checkbox')) {
     context.handleCheckbox(e);
   }
 
@@ -219,10 +221,10 @@ Route.prototype.handleCheckbox = function(e) {
     if (this.polyline) {
       this.polyline.setOptions({strokeWeight: 2, strokeColor: this.color });
     }
-    this.map.map.fitBounds(this.results.routes[0].bounds);
-    this.map.map.panToBounds(this.results.routes[0].bounds);
+    this.map.resetBounds(this.results.routes[0].bounds);
   } else {
     this.resetPolyline();
+    this.map.resetBounds();
   }
 }
 
@@ -246,11 +248,12 @@ Route.prototype.removeRouteDiv = function() {
 }
 
 class Routes {
-  constructor(props) {
+  constructor(map) {
     this.routes = [];
     this.size = 0;
     this.transportationMode = "DRIVING";
     this.alertDiv = document.querySelector('.alert_routes');
+    this.map = map;
   }
 }
 
@@ -259,7 +262,7 @@ Routes.prototype.addRoute = function() {
     handleAlert(this.alertDiv, 'Number of routes exceeded');
     return;
   }
-  let newRoute = new Route(this.size);
+  let newRoute = new Route(this.map, this.size);
   newRoute.newRoute();
   this.routes.push(newRoute);
   this.size++;
@@ -268,6 +271,19 @@ Routes.prototype.addRoute = function() {
 Routes.prototype.removeRoute = function(index) {
   this.routes.slice(index, 1);
   this.size--;
+  this.map.bounds = new google.maps.LatLngBounds();
+  let count = 0;
+  this.routes.forEach(route => {
+    if (route.results) {
+      count++;
+      this.map.bounds.extend(route.results.routes[0].overview_path[0]);
+      this.map.bounds.extend(route.results.routes[0].overview_path[route.results.routes[0].overview_path.length - 1]);
+    }
+  });
+  if (!count) {
+    this.map.bounds.extend(this.map.currentPosition);
+  }
+  this.map.resetBounds();
 }
 
 Routes.prototype.calculateRoutes = function() {
