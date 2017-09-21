@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zenefits Map</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar_left">
+      <form class="search">
+        <button type="button" class="menu" title="Expand">
+          <i class="material-icons md-dark">menu</i>
+        </button>
+        <input class="search_text" type="text" name="query" placeholder="Search"/>
+        <button type="submit" value=""/><i class="material-icons md-dark" title="Search">search</i></button>
+        <div class="loader">
+        </div>
+        <div class="close"><i class="close material-icons md-dark" title="Clear results">close</i></div>
+      </form>
+      <div class="alert alert_search"></div>
+      <div class="locations"></div>
+    </div>
+    <div class="sidebar_right">
+      <div class="icons">
+        <i class="material-icons add_route" title="Add Route">add</i>
+        <i class="material-icons calc_routes" title="Directions">directions</i>
+        <i class="material-icons transportation" mode="DRIVING" title="Car">directions_car</i>
+        <i class="material-icons transportation md-dark" mode="TRANSIT" title="Transit">directions_bus</i>
+        <i class="material-icons transportation md-dark" mode="WALKING" title="Walk">directions_walk</i>
+        <i class="material-icons transportation md-dark" mode="BICYCLING" title="Bike">directions_bike</i>
+        <span class="collapse" title="Collapse">
+          <i class="material-icons">keyboard_arrow_left</i>
+          <i class="material-icons">keyboard_arrow_left</i>
+        </span>
+      </div>
+      <div class="alert alert_routes"></div>
+      <div class="routes"></div>
+    </div>
+  </div>
+  <div class="map"></div>
+  <script src="locations.js"></script>
+  <script src="routes.js"></script>
+  <script src="search.js"></script>
+  <script src="constants.js"></script>
+  <script src="loader.js"></script>
+  <script src="helpers.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="listeners.js"></script>
+  <script src="map.js"></script>
+  <script src="init.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxKh5CklCSNuiqZqlS6s9vv9kykMmosvM&libraries=places&callback=init"></script>
+</body>
+</html>
